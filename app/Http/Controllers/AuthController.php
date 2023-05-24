@@ -20,7 +20,7 @@ class AuthController extends Controller
         }
     }
     
-    public function register(RegistrationRequest $request){
+    public function register(RegistrationRequest $request):JsonResponse{
         $validated = $request->validated();
         $user = User::where('email',$validated['email'])->first();
         if($user){

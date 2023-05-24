@@ -17,7 +17,7 @@ class BaseRequest extends FormRequest
             : parent::failedValidation($validator)
         );
     }
-    protected function ajaxOrJson()
+    protected function ajaxOrJson():bool
     {
         return $this->ajax() || $this->wantsJson();
     }

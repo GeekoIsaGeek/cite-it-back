@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Auth;
 
 use App\Http\Requests\BaseRequest;
+use Illuminate\Validation\Rule;
 
 class RegistrationRequest extends BaseRequest
 {
@@ -10,7 +11,7 @@ class RegistrationRequest extends BaseRequest
     {
         return [
             'username'=> ['required','min:3','max:15','only_lowercase'],
-            'email'=> ['required','email'],
+            'email'=> ['required','email', Rule::unique('users', 'email')],
             'password' => ['required','min:8','max:15','only_lowercase','confirmed']
         ];
     }

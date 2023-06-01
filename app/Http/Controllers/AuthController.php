@@ -20,10 +20,12 @@ class AuthController extends Controller
         $request->merge([$nameOrEmail => $validated['username']]);
 
         if(auth()->attempt($request->only([$nameOrEmail, 'password']), (bool)$request->has('remember'))) {
+
             $user = User::where($nameOrEmail, $validated['username'])->first();
             return response()->json(['user'=> $user->only('username', 'email')], 200);
         } else {
             return response()->json(['error' => trans('errors.invalid_credentials')], 401);
+
         }
     }
 
@@ -32,6 +34,7 @@ class AuthController extends Controller
         $validated = $request->validated();
         $user = User::where('email', $validated['email'])->first();
         if($user) {
+
             return response()->json(['error'=> trans('errors.email_is_taken')], 400);
         } else {
             $newUser = User::create([...$validated, 'password'=> bcrypt($validated['password'])]);
@@ -45,6 +48,7 @@ class AuthController extends Controller
             );
             $newUser->notify(new VerifyEmail($newUser, $verificationUrl));
             return response()->json(["message"=> 'Your account has been created successfully'], 201);
+
         }
     }
     public function logout(): void

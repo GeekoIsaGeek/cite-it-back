@@ -48,13 +48,13 @@ class PasswordResetController extends Controller
                 $user->forceFill([
                     'password' => Hash::make($password)
                     ])->setRememberToken(Str::random(60));
-                    
-                    $user->save();
-                    
-                    event(new PasswordReset($user));
-                }
-            );
-            
+
+                $user->save();
+
+                event(new PasswordReset($user));
+            }
+        );
+
         if($status === Password::PASSWORD_RESET) {
             return redirect(env('CLIENT_APP_URL').'/password-updated');
         } else {

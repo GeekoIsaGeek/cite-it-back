@@ -7,18 +7,14 @@ use Illuminate\Support\Facades\Validator;
 
 class CustomValidationServiceProvider extends ServiceProvider
 {
-
-    /**
-     * Bootstrap services.
-     */
     public function boot(): void
     {
-        Validator::extend('only_lowercase', function ($attribute, $value, $parameters, $validator) {
+        Validator::extend('only_lowercase', function ($attribute, $value, $parameters, $validator): bool {
             $regex = '/^[a-z0-9]+$/';
-            if(preg_match($regex,$value)){
+            if(preg_match($regex, $value)) {
                 return true;
             }
-            return false;   
+            return false;
         });
     }
 }

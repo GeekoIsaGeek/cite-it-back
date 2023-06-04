@@ -13,24 +13,27 @@ use Illuminate\Support\Facades\URL;
 
 class User extends Authenticatable implements MustVerifyEmail, CanResetPassword
 {
-    use HasApiTokens;
-    use HasFactory;
-    use Notifiable;
+	use HasApiTokens;
 
-    protected $guarded = [];
+	use HasFactory;
 
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-    public function sendPasswordResetNotification($token): void
-    {
+	use Notifiable;
 
-        $url = URL::to('/api/reset-password') . '/' . $token . '/' . $this->email;
-        $this->notify(new PasswordResetEmail($this, $url));
-    }
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
-    ];
+	protected $guarded = [];
+
+	protected $hidden = [
+		'password',
+		'remember_token',
+	];
+
+	public function sendPasswordResetNotification($token): void //  This must be defined in a model
+	{
+		$url = URL::to('/api/reset-password') . '/' . $token . '/' . $this->email;
+		$this->notify(new PasswordResetEmail($this, $url));
+	}
+
+	protected $casts = [
+		'email_verified_at' => 'datetime',
+		'password'          => 'hashed',
+	];
 }

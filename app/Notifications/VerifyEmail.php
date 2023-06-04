@@ -8,27 +8,29 @@ use Illuminate\Notifications\Notification;
 
 class VerifyEmail extends Notification
 {
-    use Queueable;
+	use Queueable;
 
-    public $user;
-    public $verificationUrl;
+	public $user;
 
-    public function __construct($user, $verificationUrl)
-    {
-        $this->user = $user;
-        $this->verificationUrl = $verificationUrl;
-    }
+	public $verificationUrl;
 
-    public function via(object $notifiable): array
-    {
-        return ['mail'];
-    }
-    public function toMail(object $notifiable): MailMessage
-    {
-        return (new MailMessage())
-        ->view('emails.verification', [
-            'user'=> $this->user,
-            'url' => $this->verificationUrl,
-        ]);
-    }
+	public function __construct($user, $verificationUrl)
+	{
+		$this->user = $user;
+		$this->verificationUrl = $verificationUrl;
+	}
+
+	public function via(object $notifiable): array
+	{
+		return ['mail'];
+	}
+
+	public function toMail(object $notifiable): MailMessage
+	{
+		return (new MailMessage())
+		->view('emails.verification', [
+			'user'=> $this->user,
+			'url' => $this->verificationUrl,
+		]);
+	}
 }

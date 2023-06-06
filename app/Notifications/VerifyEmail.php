@@ -10,9 +10,9 @@ class VerifyEmail extends Notification
 {
 	use Queueable;
 
-	public $user;
+	private $user;
 
-	public $verificationUrl;
+	private $verificationUrl;
 
 	public function __construct($user, $verificationUrl)
 	{

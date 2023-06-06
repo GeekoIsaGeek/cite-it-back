@@ -10,9 +10,9 @@ class PasswordResetEmail extends Notification
 {
 	use Queueable;
 
-	public $user;
+	private $user;
 
-	public $resetUrl;
+	private $resetUrl;
 
 	public function __construct($user, $resetUrl)
 	{

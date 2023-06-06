@@ -46,6 +46,7 @@ class AuthController extends Controller
 	public function logout(): void
 	{
 		auth()->logout();
+		session()->flush();
 	}
 
 	public function verifyEmail(int $id): RedirectResponse
@@ -54,6 +55,6 @@ class AuthController extends Controller
 		if (!$user->hasVerifiedEmail() && $user->markEmailAsVerified()) {
 			event(new Verified($user));
 		}
-		return redirect(env('CLIENT_APP_URL') . '/verification-succeed');
+		return redirect(config('client-app.url') . '/verification-succeed');
 	}
 }

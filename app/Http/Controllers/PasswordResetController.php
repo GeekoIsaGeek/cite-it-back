@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\Auth\SendResetEmailRequest;
+use App\Http\Requests\Auth\UpdatePasswordRequest;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Auth\Events\PasswordReset;
 use App\Models\User;
@@ -13,13 +14,10 @@ use Illuminate\Support\Str;
 
 class PasswordResetController extends Controller
 {
-	public function sendResetLink(Request $request): JsonResponse
+	public function sendResetLink(SendResetEmailRequest $request): JsonResponse
 	{
-		$request->validate(['email' => 'required|email|exists:users,email']);
-
-		$status = Password::sendResetLink(
-			$request->only('email')
-		);
+		$validatedEmail = $request->validated()['email'];
+		$status = Password::sendResetLink(['email'=>$validatedEmail]);
 
 		if ($status === Password::RESET_LINK_SENT) {
 			return response()->json(['message'=>'Email has been sent successfully'], 200);
@@ -28,20 +26,16 @@ class PasswordResetController extends Controller
 
 	public function redirectToResetForm(string $token, string $email): RedirectResponse
 	{
-		$resetFormUrl = env('CLIENT_APP_URL') . '/update-password';
+		$resetFormUrl = config('client-app.url') . '/update-password';
 		return redirect()->away($resetFormUrl . '?token=' . $token . '&email=' . $email);
 	}
 
-	public function updatePassword(Request $request): JsonResponse |RedirectResponse
+	public function updatePassword(UpdatePasswordRequest $request): JsonResponse |RedirectResponse
 	{
-		$request->validate([
-			'token'    => 'required',
-			'email'    => 'required|email',
-			'password' => 'required|min:8|confirmed',
-		]);
+		$validated = $request->validated();
 
 		$status = Password::reset(
-			$request->only('email', 'password', 'password_confirmation', 'token'),
+			$validated,
 			function (User $user, string $password) {
 				$user->forceFill([
 					'password' => Hash::make($password),
@@ -54,7 +48,7 @@ class PasswordResetController extends Controller
 		);
 
 		if ($status === Password::PASSWORD_RESET) {
-			return redirect(env('CLIENT_APP_URL') . '/password-updated');
+			return redirect(config('client-app.url') . '/password-updated');
 		} else {
 			return response()->json(['status'=> $status]);
 		}

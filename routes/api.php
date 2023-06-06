@@ -25,7 +25,9 @@ Route::middleware(['web'])->group(function () {
 });
 
 Route::controller(PasswordResetController::class)->group(function () {
-	Route::post('/forgot-password', 'sendResetLink')->middleware('guest')->name('password.email');
-	Route::get('/reset-password/{token}/{email}', 'redirectToResetForm')->middleware('guest')->name('password.reset');
-	Route::post('/reset-password', 'updatePassword')->middleware('guest')->name('password.update');
+	Route::middleware(['guest'])->group(function () {
+		Route::post('/forgot-password', 'sendResetLink')->name('password.email');
+		Route::get('/reset-password/{token}/{email}', 'redirectToResetForm')->name('password.reset');
+		Route::post('/reset-password', 'updatePassword')->name('password.update');
+	});
 });

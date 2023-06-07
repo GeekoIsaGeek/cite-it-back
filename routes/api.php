@@ -3,23 +3,31 @@
 use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
+use App\Http\Controllers\GoogleAuthController;
+use App\Http\Controllers\PasswordResetController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+	return $request->user();
 })->name('user.get');
 
 Route::controller(AuthController::class)->group(function () {
-    Route::post('/login', 'login')->name('login');
-    Route::post('/register', 'register')->name('register');
+	Route::get('email/verify/{id}/{hash}', 'verifyEmail')->middleware(['signed'])->name('verification.verify');
+	Route::post('/login', 'login')->name('login');
+	Route::post('/register', 'register')->name('register');
+	Route::post('/logout', 'logout')->name('logout');
+});
+
+Route::middleware(['web'])->group(function () {
+	Route::controller(GoogleAuthController::class)->group(function () {
+		Route::get('/auth/redirect', 'redirectToProvider')->name('google-auth.redirect');
+		Route::get('/auth/callback', 'handleCallback')->name('google-auth.callback');
+	});
+});
+
+Route::controller(PasswordResetController::class)->group(function () {
+	Route::middleware(['guest'])->group(function () {
+		Route::post('/forgot-password', 'sendResetLink')->name('password.email');
+		Route::get('/reset-password/{token}/{email}', 'redirectToResetForm')->name('password.reset');
+		Route::post('/reset-password', 'updatePassword')->name('password.update');
+	});
 });

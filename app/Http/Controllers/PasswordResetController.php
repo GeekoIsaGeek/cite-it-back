@@ -30,7 +30,7 @@ class PasswordResetController extends Controller
 		return redirect()->away($resetFormUrl . '?token=' . $token . '&email=' . $email);
 	}
 
-	public function updatePassword(UpdatePasswordRequest $request): JsonResponse | RedirectResponse
+	public function updatePassword(UpdatePasswordRequest $request): JsonResponse
 	{
 		$validated = $request->validated();
 		$user = User::where('email', $validated['email'])->first();
@@ -48,7 +48,6 @@ class PasswordResetController extends Controller
 
 		if ($status === Password::PASSWORD_RESET) {
 			event(new PasswordReset($user));
-
 			return response()->json(['message' => 'Password has been recovered successfully'], 200);
 		} else {
 			return response()->json(['status' => $status], 400);

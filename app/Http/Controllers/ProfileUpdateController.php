@@ -16,14 +16,22 @@ class ProfileUpdateController extends Controller
 		try {
 			$validated = $request->validated();
 			$user = User::where('id', $validated['id'])->first();
-			$validated['password'] = bcrypt($validated['password']);
+			$credentials = Arr::except($validated, 'id');
 
-			if (array_key_exists('email', $validated)) {
-				$user->update(Arr::except($validated, 'id'));
-				$sendVerificationEmail->handle($user);
-				return response()->json(['message' => 'Your profile has been updated and email verification email has been sent'], 200);
+			if (array_key_exists('password', $credentials)) {
+				$credentials['password'] = bcrypt($credentials['password']);
 			}
-			$user->update(Arr::except($validated, 'id'));
+
+			if (array_key_exists('profile_picture', $credentials)) {
+				// save image
+			}
+
+			if (array_key_exists('email', $credentials)) {
+				$user->update($credentials);
+				$sendVerificationEmail->handle($user);
+				return response()->json(['message' => 'Email has been updated'], 200);
+			}
+			$user->update($credentials);
 			return response()->json(['message' => 'Your profile has been updated'], 200);
 		} catch(Throwable $error) {
 			return response()->json(['error' => trans('errors.invalid_credentials'), 'exactErrorMessage' => $error->getMessage()], 400);

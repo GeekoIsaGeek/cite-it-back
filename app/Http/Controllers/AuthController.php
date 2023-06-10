@@ -43,9 +43,16 @@ class AuthController extends Controller
 	public function verifyEmail(int $id): RedirectResponse
 	{
 		$user = User::findOrFail($id);
-		if (!$user->hasVerifiedEmail() && $user->markEmailAsVerified()) {
+		$baseUrl = config('client-app.url');
+		$redirectUrl = $baseUrl . '/auth/verification-succeed';
+
+		if ($user->hasVerifiedEmail()) {
+			$redirectUrl = $baseUrl . '/email-updated';
+		}
+
+		if ($user->markEmailAsVerified()) {
 			event(new Verified($user));
 		}
-		return redirect(config('client-app.url') . '/auth/verification-succeed');
+		return redirect($redirectUrl);
 	}
 }

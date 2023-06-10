@@ -26,13 +26,14 @@ class PasswordResetController extends Controller
 
 	public function redirectToResetForm(string $token, string $email): RedirectResponse
 	{
-		$resetFormUrl = config('client-app.url') . '/update-password';
+		$resetFormUrl = config('client-app.url') . '/auth/update-password';
 		return redirect()->away($resetFormUrl . '?token=' . $token . '&email=' . $email);
 	}
 
-	public function updatePassword(UpdatePasswordRequest $request): JsonResponse |RedirectResponse
+	public function updatePassword(UpdatePasswordRequest $request): JsonResponse | RedirectResponse
 	{
 		$validated = $request->validated();
+		$user = User::where('email', $validated['email'])->first();
 
 		$status = Password::reset(
 			$validated,
@@ -42,15 +43,15 @@ class PasswordResetController extends Controller
 				])->setRememberToken(Str::random(60));
 
 				$user->save();
-
-				event(new PasswordReset($user));
 			}
 		);
 
 		if ($status === Password::PASSWORD_RESET) {
-			return redirect(config('client-app.url') . '/password-updated');
+			event(new PasswordReset($user));
+
+			return response()->json(['message' => 'Password has been recovered successfully'], 200);
 		} else {
-			return response()->json(['status'=> $status]);
+			return response()->json(['status' => $status], 400);
 		}
 	}
 }

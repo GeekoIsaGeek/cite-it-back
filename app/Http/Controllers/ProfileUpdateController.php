@@ -7,6 +7,7 @@ use App\Http\Requests\Auth\UpdateProfileRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Storage;
 use Throwable;
 
 class ProfileUpdateController extends Controller
@@ -23,7 +24,16 @@ class ProfileUpdateController extends Controller
 			}
 
 			if (array_key_exists('profile_picture', $credentials)) {
-				// save image
+				$profilePicture = $request->file('profile_picture');
+				$folderPath = 'public/users/' . $user->id;
+				$imageName = 'avatar.' . $profilePicture->getClientOriginalExtension();
+				$imagePath = $profilePicture->storeAs($folderPath, $imageName);
+				$existingAvatar = auth()->user()->profile_picture;
+
+				if ($existingAvatar) {
+					Storage::delete($existingAvatar);
+				}
+				$credentials['profile_picture'] = $imagePath;
 			}
 
 			if (array_key_exists('email', $credentials)) {

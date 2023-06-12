@@ -29,6 +29,7 @@ class GoogleAuthController extends Controller
 				'email'                => $googleUser->email,
 				'google_token'         => $googleUser->token,
 				'google_refresh_token' => $googleUser->refreshToken,
+				'profile_picture'      => $googleUser->getAvatar(),
 			]);
 			auth()->login($user);
 			return redirect(config('client-app.url'));

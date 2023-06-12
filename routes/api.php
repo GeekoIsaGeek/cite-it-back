@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\PasswordResetController;
+use App\Http\Controllers\ProfileUpdateController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 	return $request->user();
@@ -31,3 +32,5 @@ Route::controller(PasswordResetController::class)->group(function () {
 		Route::post('/reset-password', 'updatePassword')->name('password.update');
 	});
 });
+
+Route::post('/update-profile', [ProfileUpdateController::class, 'updateProfile'])->name('user.update');

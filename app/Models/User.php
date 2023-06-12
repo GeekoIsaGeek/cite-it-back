@@ -19,7 +19,7 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword
 
 	use Notifiable;
 
-	protected $guarded = [];
+	protected $guarded = ['id'];
 
 	protected $hidden = [
 		'password',

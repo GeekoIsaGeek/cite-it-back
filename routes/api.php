@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GoogleAuthController;
+use App\Http\Controllers\MovieController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\ProfileUpdateController;
 
@@ -34,3 +35,10 @@ Route::controller(PasswordResetController::class)->group(function () {
 });
 
 Route::post('/update-profile', [ProfileUpdateController::class, 'updateProfile'])->name('user.update');
+
+Route::controller(MovieController::class)->group(function () {
+	Route::get('/movies', 'index')->name('movies.index');
+	Route::post('/movies', 'store')->name('movies.store');
+	Route::put('/movies/{movie}', 'update')->name('movies.update');
+	Route::delete('/movies/{movie}', 'destroy')->name('movies.destroy');
+});

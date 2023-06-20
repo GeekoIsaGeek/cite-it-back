@@ -27,22 +27,23 @@ class ProfileUpdateController extends Controller
 				$profilePicture = $request->file('profile_picture');
 				$folderPath = 'public/users/' . $user->id;
 				$imageName = 'avatar.' . $profilePicture->getClientOriginalExtension();
-				$imagePath = $profilePicture->storeAs($folderPath, $imageName);
-				$existingAvatar = auth()->user()->profile_picture;
 
+				$existingAvatar = auth()->user()->profile_picture;
 				if ($existingAvatar) {
 					Storage::delete($existingAvatar);
 				}
+
+				$imagePath = $profilePicture->storeAs($folderPath, $imageName);
 				$credentials['profile_picture'] = $imagePath;
 			}
 
 			if (array_key_exists('email', $credentials)) {
 				$user->update($credentials);
 				$sendVerificationEmail->handle($user);
-				return response()->json(['message' => 'Email has been updated'], 200);
+				return response()->json(['message' => 'Email has been updated', 'user' => $credentials], 200);
 			}
 			$user->update($credentials);
-			return response()->json(['message' => 'Your profile has been updated'], 200);
+			return response()->json(['message' => 'Your profile has been updated', 'user' => $credentials], 200);
 		} catch(Throwable $error) {
 			return response()->json(['error' => trans('errors.invalid_credentials'), 'exactErrorMessage' => $error->getMessage()], 400);
 		}

@@ -32,7 +32,7 @@ class GoogleAuthController extends Controller
 				'profile_picture'      => $googleUser->getAvatar(),
 			]);
 			auth()->login($user);
-			return redirect(config('client-app.url'));
+			return redirect(config('client-app.url') . '/news-feed');
 		} catch (Throwable $error) {
 			return $error->getMessage();
 		}

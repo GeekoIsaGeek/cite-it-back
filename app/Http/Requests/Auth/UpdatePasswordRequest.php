@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Auth;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\BaseRequest;
 
-class UpdatePasswordRequest extends FormRequest
+class UpdatePasswordRequest extends BaseRequest
 {
 	public function rules(): array
 	{

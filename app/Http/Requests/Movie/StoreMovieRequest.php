@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Movie;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\BaseRequest;
 
-class StoreMovieRequest extends FormRequest
+class StoreMovieRequest extends BaseRequest
 {
 	public function rules(): array
 	{

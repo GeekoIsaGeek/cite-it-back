@@ -5,24 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Movie extends Model
+class Quote extends Model
 {
 	use HasFactory;
 
 	protected $guarded = [];
 
 	protected $casts = [
-		'genre'       => 'array',
-		'name'        => 'array',
-		'description' => 'array',
-		'director'    => 'array',
+		'quote'=> 'array',
 	];
 
-	public function quotes(): HasMany
+	public function movie(): BelongsTo
 	{
-		return $this->hasMany(Quote::class);
+		return  $this->belongsTo(Movie::class);
 	}
 
 	public function author(): BelongsTo

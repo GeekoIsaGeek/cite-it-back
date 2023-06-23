@@ -12,7 +12,7 @@ class MovieController extends Controller
 {
 	public function index(): JsonResponse
 	{
-		$movies = Movie::all();
+		$movies = Movie::where('user_id', auth()->user()->id)->with('quotes')->get();
 		return response()->json($movies, 200);
 	}
 
@@ -32,6 +32,7 @@ class MovieController extends Controller
 				'genre'        => $validated['genre'],
 				'release_date' => $validated['release_date'],
 				'poster'       => $validated['poster'],
+				'user_id'      => auth()->user()->id,
 			]
 		);
 		if ($movie) {

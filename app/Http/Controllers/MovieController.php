@@ -18,7 +18,6 @@ class MovieController extends Controller
 
 	public function store(StoreMovieRequest $request): JsonResponse
 	{
-		return response()->json($request['genre'], 201);
 		$validated = $request->validated();
 		$existingMovie = Movie::where('name->en', $validated['name'])->first();
 		if ($existingMovie) {

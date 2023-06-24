@@ -9,9 +9,15 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\RedirectResponse;
 use App\Actions\SendVerificationEmail;
+use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
+	public function getUser(Request $request): mixed
+	{
+		return $request->user();
+	}
+
 	public function login(LoginRequest $request): JsonResponse
 	{
 		$validated = $request->validated();

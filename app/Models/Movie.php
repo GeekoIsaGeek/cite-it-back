@@ -20,6 +20,10 @@ class Movie extends Model
 		'director'    => 'array',
 	];
 
+	protected $hidden = ['quote_id', 'user_id'];
+
+	protected $with = ['author'];
+
 	public function quotes(): HasMany
 	{
 		return $this->hasMany(Quote::class);
@@ -27,6 +31,6 @@ class Movie extends Model
 
 	public function author(): BelongsTo
 	{
-		return $this->belongsTo(User::class);
+		return $this->belongsTo(User::class, 'user_id');
 	}
 }

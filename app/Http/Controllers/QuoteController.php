@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Quote\StoreQuoteRequest;
 use App\Models\Quote;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Storage;
 
 class QuoteController extends Controller
 {
@@ -20,5 +21,15 @@ class QuoteController extends Controller
 			'user_id'  => auth()->user()->id,
 		]);
 		return response()->json($quote, 201);
+	}
+
+	public function destroy(int $quoteId): JsonResponse
+	{
+		$quote = Quote::find($quoteId);
+		if (Storage::has($quote->image)) {
+			Storage::delete($quote->image);
+		}
+		$quote->delete();
+		return response()->json(null, 200);
 	}
 }

@@ -12,17 +12,16 @@ class Quote extends Model
 
 	protected $guarded = [];
 
+	protected $hidden = ['movie_id'];
+
 	protected $casts = [
 		'quote'=> 'array',
 	];
 
+	protected $with = ['movie'];
+
 	public function movie(): BelongsTo
 	{
 		return  $this->belongsTo(Movie::class);
-	}
-
-	public function author(): BelongsTo
-	{
-		return $this->belongsTo(User::class);
 	}
 }

@@ -12,7 +12,7 @@ class MovieController extends Controller
 {
 	public function index(): JsonResponse
 	{
-		$movies = Movie::where('user_id', auth()->user()->id)->with('quotes')->get();
+		$movies = Movie::where('user_id', auth()->user()->id)->with(['quotes'])->get();
 		return response()->json($movies, 200);
 	}
 
@@ -36,14 +36,15 @@ class MovieController extends Controller
 			]
 		);
 		if ($movie) {
-			return response()->json($movie, 201);
+			return response()->json($movie->load('quotes'), 201);
 		} else {
 			return response()->json(['error' => trans('errors.could_not_be_added')], 400);
 		}
 	}
 
-	public function destroy(int $id): JsonResponse
+	public function destroy(int|string $id): JsonResponse
 	{
+		$id = (int)$id;
 		$movie = Movie::find($id);
 		if ($movie) {
 			Storage::delete($movie->poster);

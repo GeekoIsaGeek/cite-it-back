@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\MovieController;
@@ -40,6 +39,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
 		Route::delete('/quotes/{quote}', 'destroy')->name('quotes.destroy');
 		Route::post('/quotes/{quote}', 'update')->name('quotes.update');
 	});
-	Route::get('/user', fn (Request $request) => $request->user())->name('user.get');
+	Route::get('/user', [AuthController::class, 'getUser'])->name('user.get');
 });
 Route::post('/update-profile', [ProfileUpdateController::class, 'updateProfile'])->name('user.update');

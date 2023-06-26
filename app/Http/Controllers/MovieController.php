@@ -79,6 +79,6 @@ class MovieController extends Controller
 		}, ARRAY_FILTER_USE_KEY);
 
 		$movie->update($validated);
-		return response()->json($movie, 200);
+		return response()->json($movie->load('quotes'), 200);
 	}
 }

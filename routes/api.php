@@ -35,9 +35,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
 		Route::delete('/movies/{movie}', 'destroy')->name('movies.destroy');
 	});
 	Route::controller(QuoteController::class)->group(function () {
+		Route::get('/quotes', 'index')->name('quotes.index');
 		Route::post('/quotes', 'store')->name('quotes.store');
 		Route::delete('/quotes/{quote}', 'destroy')->name('quotes.destroy');
-		Route::post('/quotes/{quote}', 'update')->name('quotes.update');
+		Route::put('/quotes/{quote}', 'update')->name('quotes.update');
 	});
 	Route::get('/user', [AuthController::class, 'getUser'])->name('user.get');
 });

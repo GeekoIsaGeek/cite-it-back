@@ -44,17 +44,17 @@ class QuoteController extends Controller
 	{
 		$validated = $request->validated();
 		$quote = Quote::find($id);
+		$updatedData = [];
 
 		if (array_key_exists('quote', $validated) && array_key_exists('quote_ka', $validated)) {
-			$validated['quote'] = ['en'=> $validated['quote'], 'ka'=> $validated['quote_ka']];
+			$updatedData['quote'] = ['en'=> $validated['quote'], 'ka'=> $validated['quote_ka']];
 		}
 		if (array_key_exists('image', $validated)) {
 			Storage::delete($quote->image);
-			$validated['image'] = $request->file('image')->store('/quotes/' . $validated['quote']['en']);
+			$updatedData['image'] = $request->file('image')->store('/quotes/' . $quote->id);
 		}
 		$quote->update([
-			'quote'    => $validated['quote'],
-			'image'    => $validated['image'],
+			...$updatedData,
 			'movie_id' => $validated['id'],
 			'user_id'  => auth()->user()->id,
 		]);

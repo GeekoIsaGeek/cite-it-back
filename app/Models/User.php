@@ -9,6 +9,8 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use App\Notifications\PasswordResetEmail;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Facades\URL;
 
 class User extends Authenticatable implements MustVerifyEmail, CanResetPassword
@@ -26,10 +28,20 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword
 		'remember_token',
 	];
 
-	public function sendPasswordResetNotification($token): void //  This must be defined in a model
+	public function sendPasswordResetNotification($token): void
 	{
 		$url = URL::to('/api/reset-password') . '/' . $token . '/' . $this->email;
 		$this->notify(new PasswordResetEmail($this, $url));
+	}
+
+	public function movies(): HasMany
+	{
+		return $this->hasMany(Movie::class);
+	}
+
+	public function quotes(): HasManyThrough
+	{
+		return $this->hasManyThrough(Quote::class, Movie::class);
 	}
 
 	protected $casts = [

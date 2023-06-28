@@ -24,16 +24,11 @@ class ProfileUpdateController extends Controller
 			}
 
 			if (array_key_exists('profile_picture', $credentials)) {
-				$profilePicture = $request->file('profile_picture');
-				$folderPath = 'public/users/' . $user->id;
-				$imageName = 'avatar.' . $profilePicture->getClientOriginalExtension();
-
-				$existingAvatar = auth()->user()->profile_picture;
+				$existingAvatar = $user->profile_picture;
 				if ($existingAvatar) {
 					Storage::delete($existingAvatar);
 				}
-
-				$imagePath = $profilePicture->storeAs($folderPath, $imageName);
+				$imagePath = $request->file('profile_picture')->store('users/' . $user->id);
 				$credentials['profile_picture'] = $imagePath;
 			}
 

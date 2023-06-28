@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests\Auth;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\BaseRequest;
 use Illuminate\Validation\Rule;
 
-class RegistrationRequest extends FormRequest
+class RegistrationRequest extends BaseRequest
 {
 	public function rules(): array
 	{

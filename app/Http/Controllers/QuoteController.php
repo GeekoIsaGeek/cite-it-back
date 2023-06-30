@@ -12,7 +12,7 @@ class QuoteController extends Controller
 {
 	public function index(): JsonResponse
 	{
-		$quotes = Quote::all();
+		$quotes = Quote::orderBy('created_at', 'desc')->get();
 		return response()->json($quotes, 200);
 	}
 

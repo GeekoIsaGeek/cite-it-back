@@ -7,6 +7,7 @@ use App\Http\Controllers\MovieController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\ProfileUpdateController;
 use App\Http\Controllers\QuoteController;
+use App\Http\Controllers\SearchController;
 
 Route::controller(AuthController::class)->group(function () {
 	Route::get('email/verify/{id}/{hash}', 'verifyEmail')->middleware(['signed'])->name('verification.verify');
@@ -27,6 +28,7 @@ Route::controller(PasswordResetController::class)->group(function () {
 		Route::post('/reset-password', 'updatePassword')->name('password.update');
 	});
 });
+
 Route::middleware(['auth:sanctum'])->group(function () {
 	Route::controller(MovieController::class)->group(function () {
 		Route::get('/movies', 'index')->name('movies.index');
@@ -41,5 +43,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
 		Route::put('/quotes/{quote}', 'update')->name('quotes.update');
 	});
 	Route::get('/user', [AuthController::class, 'getUser'])->name('user.get');
+	Route::get('/search/{string}', [SearchController::class, 'search'])->name('search');
 });
 Route::post('/update-profile', [ProfileUpdateController::class, 'updateProfile'])->name('user.update');

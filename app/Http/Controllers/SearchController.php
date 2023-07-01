@@ -17,8 +17,8 @@ class SearchController extends Controller
 		}
 		if (str_starts_with($searchString, '@')) {
 			$movies = Movie::where('name->en', 'like', '%' . substr($searchString, 1) . '%')->orWhere('name->ka', 'like', '%' . substr($searchString, 1) . '%')->get();
-			return response()->json($movies, 200);
+			return response()->json($movies->load('quotes'), 200);
 		}
-		return response()->json(null, 404);
+		return response()->json([]);
 	}
 }

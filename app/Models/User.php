@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use App\Notifications\PasswordResetEmail;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Facades\URL;
@@ -42,6 +43,11 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword
 	public function quotes(): HasManyThrough
 	{
 		return $this->hasManyThrough(Quote::class, Movie::class);
+	}
+
+	public function likedPosts(): BelongsToMany
+	{
+		return $this->belongsToMany(Quote::class);
 	}
 
 	protected $casts = [

@@ -7,6 +7,7 @@ use App\Http\Controllers\MovieController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\ProfileUpdateController;
 use App\Http\Controllers\QuoteController;
+use App\Http\Controllers\QuoteInteractions;
 use App\Http\Controllers\SearchController;
 
 Route::controller(AuthController::class)->group(function () {
@@ -15,12 +16,14 @@ Route::controller(AuthController::class)->group(function () {
 	Route::post('/register', 'register')->name('register');
 	Route::post('/logout', 'logout')->name('logout');
 });
+
 Route::middleware(['web'])->group(function () {
 	Route::controller(GoogleAuthController::class)->group(function () {
 		Route::get('/auth/redirect', 'redirectToProvider')->name('google-auth.redirect');
 		Route::get('/auth/callback', 'handleCallback')->name('google-auth.callback');
 	});
 });
+
 Route::controller(PasswordResetController::class)->group(function () {
 	Route::middleware(['guest'])->group(function () {
 		Route::post('/forgot-password', 'sendResetLink')->name('password.email');
@@ -44,5 +47,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
 	});
 	Route::get('/user', [AuthController::class, 'getUser'])->name('user.get');
 	Route::get('/search/{string}', [SearchController::class, 'search'])->name('search');
+	Route::post('/{quote}/add-like', [QuoteInteractions::class, 'addLike'])->name('add-like');
 });
 Route::post('/update-profile', [ProfileUpdateController::class, 'updateProfile'])->name('user.update');

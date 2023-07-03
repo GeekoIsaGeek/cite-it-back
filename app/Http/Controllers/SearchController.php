@@ -10,13 +10,14 @@ class SearchController extends Controller
 {
 	public function search(string $searchString): JsonResponse
 	{
-		$searchString = trim($searchString);
+		$formattedSearchString = substr(trim($searchString), 1);
+
 		if (str_starts_with($searchString, '#')) {
-			$quotes = Quote::where('quote->en', 'like', '%' . substr($searchString, 1) . '%')->orWhere('quote->ka', 'like', '%' . substr($searchString, 1) . '%')->get();
+			$quotes = Quote::where('quote->en', 'like', "%$formattedSearchString%")->orWhere('quote->ka', 'like', "%$formattedSearchString%")->get();
 			return response()->json($quotes, 200);
 		}
 		if (str_starts_with($searchString, '@')) {
-			$movies = Movie::where('name->en', 'like', '%' . substr($searchString, 1) . '%')->orWhere('name->ka', 'like', '%' . substr($searchString, 1) . '%')->get();
+			$movies = Movie::where('name->en', 'like', "%$formattedSearchString%")->orWhere('name->ka', 'like',"%$formattedSearchString%")->get();
 			return response()->json($movies->load('quotes'), 200);
 		}
 		return response()->json([]);

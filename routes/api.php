@@ -47,6 +47,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
 	});
 	Route::get('/user', [AuthController::class, 'getUser'])->name('user.get');
 	Route::get('/search/{string}', [SearchController::class, 'search'])->name('search');
-	Route::post('/{quote}/add-like', [QuoteInteractions::class, 'addLike'])->name('add-like');
+	Route::controller(QuoteInteractions::class)->group(function (){
+		Route::post('/{quote}/add-like', 'addLike')->name('add-like');
+		Route::post('/{quote}/add-comment','addComment')->name('add-comment');
+	});
 });
 Route::post('/update-profile', [ProfileUpdateController::class, 'updateProfile'])->name('user.update');

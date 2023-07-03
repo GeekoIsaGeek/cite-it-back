@@ -27,7 +27,7 @@ class QuoteController extends Controller
 			'image'    => $request->file('image')->store($directoryPath),
 			'user_id'  => auth()->user()->id,
 		]);
-		return response()->json($quote, 201);
+		return response()->json($quote->load('likes'), 201);
 	}
 
 	public function destroy(int $quoteId): JsonResponse
@@ -59,6 +59,6 @@ class QuoteController extends Controller
 			'user_id'  => auth()->user()->id,
 		]);
 
-		return response()->json($quote, 200);
+		return response()->json($quote->load('likes'), 200);
 	}
 }

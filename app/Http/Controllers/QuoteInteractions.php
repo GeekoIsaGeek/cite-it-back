@@ -20,7 +20,7 @@ class QuoteInteractions extends Controller
 			event(new QuoteHasBeenLiked($quote->load('likes')));
 		}
 	}
-	public function addComment(AddCommentRequest $request,int $quoteId)
+	public function addComment(AddCommentRequest $request,int $quoteId): void
 	{
 		$validatedComment = $request->validated()['comment'];
 		$userId = auth()->user()->id;
@@ -31,7 +31,5 @@ class QuoteInteractions extends Controller
 			'comment' => $validatedComment
 		]);
 		event(new CommentHasBeenAdded($quote->load('comments')));
-		
-		return response()->json($quote);
 	}
 }

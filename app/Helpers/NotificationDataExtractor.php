@@ -9,7 +9,6 @@ class NotificationDataExtractor
         return [
             'profile_picture' => $user->profile_picture,
             'username' => $user->username,
-            'id' => $user->id
         ];
     }
 }

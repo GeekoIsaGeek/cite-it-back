@@ -9,6 +9,7 @@ use App\Events\QuoteNotificationEvent;
 use App\Helpers\NotificationDataExtractor;
 use App\Http\Requests\Quote\AddCommentRequest;
 use App\Models\Comment;
+use App\Models\Notification;
 use App\Models\Quote;
 
 class LikeCommentController extends Controller
@@ -22,7 +23,8 @@ class LikeCommentController extends Controller
 		if (!$hasAlreadyLiked) {
 			$quote->likes()->attach($user->id);
 			event(new QuoteLikedEvent($quote));	
-			$this->fireQuoteNotificationEvent($user,$quote->id);			
+			$notification = $this->createNotification($user->id,$quote->id,'like');
+			$this->fireQuoteNotificationEvent($notification, $user);		
 		}
 	}
 
@@ -37,12 +39,24 @@ class LikeCommentController extends Controller
 			'comment' => $validatedComment
 		]);
 		event(new CommentAddedEvent($quote));
-		$this->fireQuoteNotificationEvent($user,$quote->id);				
+		$notification = $this->createNotification($user->id,$quote->id,'comment');
+		$this->fireQuoteNotificationEvent($notification,$user);				
 	}
 	
-	private function fireQuoteNotificationEvent($user,$quoteId): void 
+	private function createNotification(int $userId,int $quoteId,string $action): mixed 
 	{
+		$notification = Notification::create([
+			'user_id' => $userId,
+			'quote_id' => $quoteId,
+			'action' => $action
+		]); 
+
+		return $notification;
+	}
+
+	private function fireQuoteNotificationEvent(mixed $notification, mixed $user): void 
+	{	
 		$author = NotificationDataExtractor::extractUserData($user);
-		event(new QuoteNotificationEvent($author,$quoteId));
+		event(new QuoteNotificationEvent($notification,$author));
 	}
 }

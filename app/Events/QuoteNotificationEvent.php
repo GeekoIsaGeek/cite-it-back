@@ -14,18 +14,18 @@ class QuoteNotificationEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
     public $author;
-    public $quoteId;
+    public $notification;
 
-    public function __construct(mixed $author,int $quoteId)
+    public function __construct(mixed $notification, mixed $author)
     {
-        $this->quoteId = $quoteId;
+        $this->notification = $notification;
         $this->author = $author;
     }
   
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('notifications.'.$this->author['id']),
+            new PrivateChannel('notifications.'.$this->notification['user_id']),
         ];
     }
 }

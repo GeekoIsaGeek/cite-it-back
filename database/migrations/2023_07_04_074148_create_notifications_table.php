@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id');
             $table->foreignId('quote_id');
             $table->boolean('seen')->default(false);
+            $table->string('action');
             $table->timestamps();
         });
     }

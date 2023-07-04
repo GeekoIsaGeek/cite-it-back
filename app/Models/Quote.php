@@ -36,4 +36,5 @@ class Quote extends Model
 	{
 		return $this->hasMany(Comment::class);
 	}
+
 }

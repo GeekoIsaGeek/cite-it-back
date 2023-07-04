@@ -15,7 +15,7 @@ class AuthController extends Controller
 {
 	public function getUser(Request $request): mixed
 	{
-		return $request->user();
+		return $request->user()->load('notifications');
 	}
 
 	public function login(LoginRequest $request): JsonResponse

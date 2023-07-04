@@ -50,6 +50,11 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword
 		return $this->belongsToMany(Quote::class);
 	}
 
+	public function notifications(): HasMany 
+	{
+		return $this->hasMany(Notification::class);
+	}
+
 	protected $casts = [
 		'email_verified_at' => 'datetime',
 		'password'          => 'hashed',

@@ -14,17 +14,13 @@ class CommentAddedEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $quote;
-    public function __construct(mixed $quote)
+    public $comment;
+    public function __construct(mixed $comment)
     {
-        $this->quote = $quote;
+        $this->comment = $comment;
     }
 
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return array<int, \Illuminate\Broadcasting\Channel>
-     */
+    
     public function broadcastOn(): array
     {
         return [

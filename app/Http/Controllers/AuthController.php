@@ -15,7 +15,9 @@ class AuthController extends Controller
 {
 	public function getUser(Request $request): mixed
 	{
-		return $request->user()->load('notifications');
+		return $request->user()->load(['notifications' => function($query){
+			$query->orderBy('created_at','desc');
+		}]);
 	}
 
 	public function login(LoginRequest $request): JsonResponse

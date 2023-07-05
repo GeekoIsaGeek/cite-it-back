@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
+            $table->string('author');
+            $table->string('author_avatar');
             $table->foreignId('user_id');
             $table->foreignId('quote_id');
             $table->boolean('seen')->default(false);

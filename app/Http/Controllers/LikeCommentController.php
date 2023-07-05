@@ -22,9 +22,8 @@ class LikeCommentController extends Controller
 		$hasAlreadyLiked = $quote->likes()->where('user_id', $user->id)->exists();
 		if (!$hasAlreadyLiked) {
 			$quote->likes()->attach($user->id);
-			event(new QuoteLikedEvent($quote));	
-			$notification = $this->createNotification($user->id,$quote->id,'like');
-			$this->fireQuoteNotificationEvent($notification, $user);		
+			event(new QuoteLikedEvent());	
+			$this->createNotification($user, $quote->id, 'like');
 		}
 	}
 
@@ -38,25 +37,22 @@ class LikeCommentController extends Controller
 			'quote_id' => $quote->id,
 			'comment' => $validatedComment
 		]);
-		event(new CommentAddedEvent($quote));
-		$notification = $this->createNotification($user->id,$quote->id,'comment');
-		$this->fireQuoteNotificationEvent($notification,$user);				
+		event(new CommentAddedEvent($comment));
+		$this->createNotification($user, $quote->id, 'comment');
 	}
 	
-	private function createNotification(int $userId,int $quoteId,string $action): mixed 
+	private function createNotification(mixed $user, int $quoteId, string $action): void
 	{
+		$author = NotificationDataExtractor::extractUserData($user);	
 		$notification = Notification::create([
-			'user_id' => $userId,
 			'quote_id' => $quoteId,
-			'action' => $action
+			'user_id' => $user->id,
+			'action' => $action,
+			'author' => $author['username'],
+			'author_avatar' => $author['profile_picture']
 		]); 
 
-		return $notification;
+		event(new QuoteNotificationEvent($notification, $user->id));
 	}
 
-	private function fireQuoteNotificationEvent(mixed $notification, mixed $user): void 
-	{	
-		$author = NotificationDataExtractor::extractUserData($user);
-		event(new QuoteNotificationEvent($notification,$author));
-	}
 }

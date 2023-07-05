@@ -13,19 +13,19 @@ use Illuminate\Queue\SerializesModels;
 class QuoteNotificationEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    public $author;
     public $notification;
+    public $userId;
 
-    public function __construct(mixed $notification, mixed $author)
+    public function __construct(mixed $notification, int $userId)
     {
         $this->notification = $notification;
-        $this->author = $author;
+        $this->userId = $userId;
     }
   
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('notifications.'.$this->notification['user_id']),
+            new PrivateChannel('notifications.'.$this->userId),
         ];
     }
 }

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Events\CommentAddedEvent;
-use App\Events\QuoteInteractionEvent;
 use App\Events\QuoteLikedEvent;
 use App\Events\QuoteNotificationEvent;
 use App\Helpers\NotificationDataExtractor;
@@ -22,8 +21,8 @@ class LikeCommentController extends Controller
 		$hasAlreadyLiked = $quote->likes()->where('user_id', $user->id)->exists();
 		if (!$hasAlreadyLiked) {
 			$quote->likes()->attach($user->id);
-			event(new QuoteLikedEvent());	
-			$this->createNotification($user, $quote->id, 'like');
+			event(new QuoteLikedEvent());
+			$this->createNotification( $user, $quote, 'like');
 		}
 	}
 
@@ -38,21 +37,21 @@ class LikeCommentController extends Controller
 			'comment' => $validatedComment
 		]);
 		event(new CommentAddedEvent($comment));
-		$this->createNotification($user, $quote->id, 'comment');
+		$this->createNotification($user, $quote, 'comment');
 	}
 	
-	private function createNotification(mixed $user, int $quoteId, string $action): void
+	private function createNotification(mixed $user, mixed $quote, string $action): void
 	{
-		$author = NotificationDataExtractor::extractUserData($user);	
+		$interactant = NotificationDataExtractor::extractUserData($user);	
+		$quoteCreatorId = $quote->movie->author->id;
 		$notification = Notification::create([
-			'quote_id' => $quoteId,
-			'user_id' => $user->id,
+			'quote_id' => $quote->id,
+			'user_id' => $quoteCreatorId,
 			'action' => $action,
-			'author' => $author['username'],
-			'author_avatar' => $author['profile_picture']
+			'author' => $interactant['username'],
+			'author_avatar' => $interactant['profile_picture']
 		]); 
-
-		event(new QuoteNotificationEvent($notification, $user->id));
+		event(new QuoteNotificationEvent($notification, $quoteCreatorId, $user->id));
 	}
 
 }

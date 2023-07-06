@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\LikeCommentController;
 use App\Http\Controllers\MovieController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\ProfileUpdateController;
 use App\Http\Controllers\QuoteController;
@@ -50,6 +51,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
 	Route::controller(LikeCommentController::class)->group(function (){
 		Route::post('/{quote}/add-like', 'addLike')->name('quote.add_like');
 		Route::post('/{quote}/add-comment','addComment')->name('quote.add_comment');
+	});
+	Route::controller(NotificationController::class)->group(function(){
+		Route::post('/{notification}/mark-as-read','markAsRead')->name('notification.mark_as_read');
+		Route::post('/notifications/mark-all-as-read','markAllAsRead')->name('notification.mark_all_as_read');
 	});
 });
 Route::post('/update-profile', [ProfileUpdateController::class, 'updateProfile'])->name('user.update');

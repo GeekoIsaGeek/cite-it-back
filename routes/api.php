@@ -39,12 +39,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
 		Route::post('/movies', 'store')->name('movies.store');
 		Route::post('/movies/{movie}', 'update')->name('movies.update');
 		Route::delete('/movies/{movie}', 'destroy')->name('movies.destroy');
+		Route::get('/movies/paginate', 'getPaginatedMovies')->name('movies.get_paginated_movies');
 	});
 	Route::controller(QuoteController::class)->group(function () {
 		Route::get('/quotes', 'index')->name('quotes.index');
 		Route::post('/quotes', 'store')->name('quotes.store');
 		Route::delete('/quotes/{quote}', 'destroy')->name('quotes.destroy');
 		Route::put('/quotes/{quote}', 'update')->name('quotes.update');
+		Route::get('/quotes/paginate', 'getPaginatedQuotes')->name('quotes.get_paginated_quotes');
 	});
 	Route::get('/user', [AuthController::class, 'getUser'])->name('user.get');
 	Route::get('/search/{string}', [SearchController::class, 'search'])->name('post.search');
@@ -55,6 +57,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 	Route::controller(NotificationController::class)->group(function(){
 		Route::post('/{notification}/mark-as-read','markAsRead')->name('notification.mark_as_read');
 		Route::post('/notifications/mark-all-as-read','markAllAsRead')->name('notification.mark_all_as_read');
+		Route::get('/notifications', 'getNotifications')-> name('notification.get');
 	});
 });
 Route::post('/update-profile', [ProfileUpdateController::class, 'updateProfile'])->name('user.update');

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Movie\EditMovieRequest;
 use App\Http\Requests\Movie\StoreMovieRequest;
 use App\Models\Movie;
+use App\Models\Quote;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
 
@@ -80,5 +81,11 @@ class MovieController extends Controller
 
 		$movie->update($validated);
 		return response()->json($movie->load('quotes'), 200);
+	}
+
+	public function getPaginatedMovies():JsonResponse
+	{
+		$movies = Movie::orderBy('created_at','desc')->with('quotes')->paginate(6); 	
+		return response()->json($movies);
 	}
 }

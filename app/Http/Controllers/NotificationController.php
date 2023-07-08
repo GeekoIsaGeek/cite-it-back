@@ -22,4 +22,9 @@ class NotificationController extends Controller
         return response()->json(auth()->user()->notifications);
     }
 
+    public function getNotifications(): JsonResponse
+    {
+        $notifications = Notification::where('user_id',auth()->user()->id)->orderBy('created_at','desc')->paginate(5);
+        return response()->json($notifications);
+    }
 }

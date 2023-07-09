@@ -12,7 +12,7 @@ use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\SearchController;
 
 Route::controller(AuthController::class)->group(function () {
-	Route::get('email/verify/{id}/{hash}', 'verifyEmail')->middleware(['signed'])->name('verification.verify');
+	Route::get('email/verify/{id}/{hash}/{email}', 'verifyEmail')->middleware(['signed'])->name('verification.verify');
 	Route::post('/login', 'login')->name('login');
 	Route::post('/register', 'register')->name('register');
 	Route::post('/logout', 'logout')->name('logout');

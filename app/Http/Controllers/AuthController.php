@@ -38,7 +38,7 @@ class AuthController extends Controller
 	{
 		$validated = $request->validated();
 		$user = User::create([...$validated, 'password'=> bcrypt($validated['password'])]);
-		$sendVerificationEmail->handle($user);
+		$sendVerificationEmail->handle($user, $user->email);
 		return response()->json(['message'=> 'Your account has been created successfully'], 201);
 	}
 
@@ -48,16 +48,18 @@ class AuthController extends Controller
 		session()->flush();
 	}
 
-	public function verifyEmail(int $id): RedirectResponse
+	public function verifyEmail(int $id, string $hash, string $email): RedirectResponse
 	{
 		$user = User::findOrFail($id);
 		$baseUrl = config('client-app.url');
 		$redirectUrl = $baseUrl . '/auth/verification-succeed';
 
+		$user->update(['email'=> $email]);
+		
 		if ($user->hasVerifiedEmail()) {
 			$redirectUrl = $baseUrl . '/email-updated';
 		}
-
+		
 		if ($user->markEmailAsVerified()) {
 			event(new Verified($user));
 		}

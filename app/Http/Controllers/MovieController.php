@@ -5,15 +5,15 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Movie\EditMovieRequest;
 use App\Http\Requests\Movie\StoreMovieRequest;
 use App\Models\Movie;
-use App\Models\Quote;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class MovieController extends Controller
 {
 	public function index(): JsonResponse
 	{
-		$movies = Movie::orderBy('release_date', 'desc')->with(['quotes'])->get();
+		$movies = Movie::where('user_id',auth()->user()->id)->orderBy('release_date', 'desc')->with(['quotes'])->get();
 		return response()->json($movies, 200);
 	}
 
@@ -44,9 +44,10 @@ class MovieController extends Controller
 	}
 
 	public function destroy(int|string $id): JsonResponse
-	{
+	{	
 		$id = (int)$id;
 		$movie = Movie::find($id);
+		$this->authorize('destroy',$movie);
 		if ($movie) {
 			Storage::delete($movie->poster);
 			$movie->delete();
@@ -59,6 +60,7 @@ class MovieController extends Controller
 	public function update(EditMovieRequest $request, int $id): JsonResponse
 	{
 		$movie = Movie::findOrFail($id);
+		$this->authorize('update',$movie);
 		$validated = $request->validated();
 
 		if (array_key_exists('name', $validated) && array_key_exists('name_ka', $validated)) {
@@ -85,7 +87,7 @@ class MovieController extends Controller
 
 	public function getPaginatedMovies():JsonResponse
 	{
-		$movies = Movie::orderBy('created_at','desc')->with('quotes')->paginate(6); 	
+		$movies = Movie::where('user_id',auth()->user()->id)->orderBy('created_at','desc')->with('quotes')->paginate(6); 	
 		return response()->json($movies);
 	}
 }

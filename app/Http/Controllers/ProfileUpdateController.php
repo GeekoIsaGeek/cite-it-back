@@ -33,10 +33,13 @@ class ProfileUpdateController extends Controller
 			}
 
 			if (array_key_exists('email', $credentials)) {
-				$user->update($credentials);
-				$sendVerificationEmail->handle($user);
-				return response()->json(['message' => 'Email has been updated', 'user' => $credentials], 200);
+				$sendVerificationEmail->handle($user, $credentials['email']);
 			}
+
+			$credentials = array_filter($credentials,function($key){
+				return $key !== 'email';
+			},ARRAY_FILTER_USE_KEY);
+
 			$user->update($credentials);
 			return response()->json(['message' => 'Your profile has been updated', 'user' => $credentials], 200);
 		} catch(Throwable $error) {

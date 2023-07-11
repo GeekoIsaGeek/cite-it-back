@@ -21,7 +21,7 @@ class LikeCommentController extends Controller
 		$hasAlreadyLiked = $quote->likes()->where('user_id', $user->id)->exists();
 		if (!$hasAlreadyLiked) {
 			$quote->likes()->attach($user->id);
-			event(new QuoteLikedEvent());
+			event(new QuoteLikedEvent($quote->id));
 			$this->createNotification( $user, $quote, 'like');
 		}
 	}

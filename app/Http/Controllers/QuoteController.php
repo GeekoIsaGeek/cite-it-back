@@ -12,7 +12,7 @@ class QuoteController extends Controller
 {
 	public function index(): JsonResponse
 	{
-		$quotes = Quote::all();
+		$quotes = Quote::orderBy('created_at', 'desc')->get();
 		return response()->json($quotes, 200);
 	}
 
@@ -27,7 +27,7 @@ class QuoteController extends Controller
 			'image'    => $request->file('image')->store($directoryPath),
 			'user_id'  => auth()->user()->id,
 		]);
-		return response()->json($quote, 201);
+		return response()->json($quote->load(['likes','comments']), 201);
 	}
 
 	public function destroy(int $quoteId): JsonResponse
@@ -59,6 +59,12 @@ class QuoteController extends Controller
 			'user_id'  => auth()->user()->id,
 		]);
 
-		return response()->json($quote, 200);
+		return response()->json($quote->load('likes'), 200);
+	}
+
+	public function getPaginatedQuotes(): JsonResponse
+	{
+		$quotes = Quote::orderBy('created_at','desc')->paginate(3);
+		return response()->json($quotes,200);
 	}
 }

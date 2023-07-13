@@ -12,8 +12,10 @@ class QuoteLikedEvent implements ShouldBroadcast
 {
 	use Dispatchable, InteractsWithSockets, SerializesModels;
 
-	public function __construct()
+	public $quoteId;
+	public function __construct(int $quoteId)
 	{
+		$this->quoteId = $quoteId;
 	}
 
 	public function broadcastOn(): array

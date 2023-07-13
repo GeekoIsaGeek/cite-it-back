@@ -21,8 +21,8 @@ class LikeCommentController extends Controller
 		$hasAlreadyLiked = $quote->likes()->where('user_id', $user->id)->exists();
 		if (!$hasAlreadyLiked) {
 			$quote->likes()->attach($user->id);
-			event(new QuoteLikedEvent());
-			$this->createNotification( $user, $quote, 'like');
+			event(new QuoteLikedEvent($quote->id));
+			$this->createNotification( $user, $quote, 'like');	
 		}
 	}
 
@@ -41,17 +41,18 @@ class LikeCommentController extends Controller
 	}
 	
 	private function createNotification(mixed $user, mixed $quote, string $action): void
-	{
-		$interactant = NotificationDataExtractor::extractUserData($user);	
-		$quoteCreatorId = $quote->movie->author->id;
-		$notification = Notification::create([
-			'quote_id' => $quote->id,
-			'user_id' => $quoteCreatorId,
-			'action' => $action,
-			'author' => $interactant['username'],
-			'author_avatar' => $interactant['profile_picture']
-		]); 
-		event(new QuoteNotificationEvent($notification, $quoteCreatorId, $user->id));
+	{	
+		if($user->id !== $quote->user_id) {
+			$interactant = NotificationDataExtractor::extractUserData($user);	
+			$quoteCreatorId = $quote->movie->author->id;
+			$notification = Notification::create([
+				'quote_id' => $quote->id,
+				'user_id' => $quoteCreatorId,
+				'action' => $action,
+				'author' => $interactant['username'],
+				'author_avatar' => $interactant['profile_picture']
+			]); 
+			event(new QuoteNotificationEvent($notification, $quoteCreatorId, $user->id));
+		}
 	}
-
 }

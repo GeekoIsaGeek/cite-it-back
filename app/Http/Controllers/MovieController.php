@@ -45,8 +45,7 @@ class MovieController extends Controller
 
 	public function destroy(int|string $id): JsonResponse
 	{	
-		$id = (int)$id;
-		$movie = Movie::find($id);
+		$movie = Movie::find((int)$id);
 		$this->authorize('destroy',$movie);
 		if ($movie) {
 			Storage::delete($movie->poster);

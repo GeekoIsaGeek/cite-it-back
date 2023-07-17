@@ -29,7 +29,7 @@ Route::controller(PasswordResetController::class)->group(function () {
 	Route::middleware(['guest'])->group(function () {
 		Route::post('/forgot-password', 'sendResetLink')->name('password.email');
 		Route::get('/reset-password/{token}/{email}', 'redirectToResetForm')->name('password.reset');
-		Route::post('/reset-password', 'updatePassword')->name('password.update');
+		Route::patch('/reset-password', 'updatePassword')->name('password.update');
 	});
 });
 
@@ -37,7 +37,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 	Route::controller(MovieController::class)->group(function () {
 		Route::get('/movies', 'index')->name('movies.index');
 		Route::post('/movies', 'store')->name('movies.store');
-		Route::post('/movies/{movie}', 'update')->name('movies.update');
+		Route::patch('/movies/{movie}', 'update')->name('movies.update');
 		Route::delete('/movies/{movie}', 'destroy')->name('movies.destroy');
 		Route::get('/movies/paginate', 'getPaginatedMovies')->name('movies.get_paginated_movies');
 	});
@@ -45,7 +45,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 		Route::get('/quotes', 'index')->name('quotes.index');
 		Route::post('/quotes', 'store')->name('quotes.store');
 		Route::delete('/quotes/{quote}', 'destroy')->name('quotes.destroy');
-		Route::put('/quotes/{quote}', 'update')->name('quotes.update');
+		Route::patch('/quotes/{quote}', 'update')->name('quotes.update');
 		Route::get('/quotes/paginate', 'getPaginatedQuotes')->name('quotes.get_paginated_quotes');
 	});
 	Route::get('/user', [AuthController::class, 'getUser'])->name('user.get');
@@ -60,4 +60,4 @@ Route::middleware(['auth:sanctum'])->group(function () {
 		Route::get('/notifications', 'getNotifications')-> name('notification.get');
 	});
 });
-Route::post('/update-profile', [ProfileUpdateController::class, 'updateProfile'])->name('user.update');
+Route::patch('/update-profile', [ProfileUpdateController::class, 'updateProfile'])->name('user.update');

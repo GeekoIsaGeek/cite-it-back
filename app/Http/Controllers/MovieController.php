@@ -6,7 +6,6 @@ use App\Http\Requests\Movie\EditMovieRequest;
 use App\Http\Requests\Movie\StoreMovieRequest;
 use App\Models\Movie;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class MovieController extends Controller
@@ -25,17 +24,8 @@ class MovieController extends Controller
 			return response()->json(['error' => trans('errors.movie_already_exists')], 400);
 		}
 		$validated['poster'] = $request->file('poster')->store('posters', 'public');
-		$movie = Movie::create(
-			[
-				'name'         => ['en'=>$validated['name'], 'ka'=> $validated['name_ka']],
-				'director'     => ['en'=>$validated['director'], 'ka'=> $validated['director_ka']],
-				'description'  => ['en'=>$validated['description'], 'ka'=>$validated['description_ka']],
-				'genre'        => $validated['genre'],
-				'release_date' => $validated['release_date'],
-				'poster'       => $validated['poster'],
-				'user_id'      => auth()->user()->id,
-			]
-		);
+		$movie = Movie::create([...$validated,'user_id' => auth()->user()->id]);
+
 		if ($movie) {
 			return response()->json($movie->load('quotes'), 201);
 		} else {
@@ -61,7 +51,20 @@ class MovieController extends Controller
 		$movie = Movie::findOrFail($id);
 		$this->authorize('update',$movie);
 		$validated = $request->validated();
+		$updatedValidatedParameters = $this->processUpdateMovieRequestParameters($validated, $movie, $request);
 
+		$movie->update($updatedValidatedParameters);
+		return response()->json($movie->load('quotes'), 200);
+	}
+
+	public function getPaginatedMovies():JsonResponse
+	{
+		$movies = Movie::where('user_id',auth()->user()->id)->orderBy('created_at','desc')->with('quotes')->paginate(6); 	
+		return response()->json($movies);
+	}
+
+	private function processUpdateMovieRequestParameters($validated, $movie, $request): array 
+	{
 		if (array_key_exists('name', $validated) && array_key_exists('name_ka', $validated)) {
 			$validated['name'] = ['en'=>$validated['name'], 'ka'=> $validated['name_ka']];
 		}
@@ -80,13 +83,6 @@ class MovieController extends Controller
 			return !preg_match('/_ka$/', $key);
 		}, ARRAY_FILTER_USE_KEY);
 
-		$movie->update($validated);
-		return response()->json($movie->load('quotes'), 200);
-	}
-
-	public function getPaginatedMovies():JsonResponse
-	{
-		$movies = Movie::where('user_id',auth()->user()->id)->orderBy('created_at','desc')->with('quotes')->paginate(6); 	
-		return response()->json($movies);
+		return $validated;
 	}
 }

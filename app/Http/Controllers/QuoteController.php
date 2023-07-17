@@ -22,7 +22,7 @@ class QuoteController extends Controller
 		$directoryPath = '/quotes/' . $validated['quote'];
 
 		$quote = Quote::create([
-			'quote'    => ['en'=> $validated['quote'], 'ka'=> $validated['quote_ka']],
+			'quote'    => $validated['quote'],
 			'movie_id' => $validated['id'],
 			'image'    => $request->file('image')->store($directoryPath),
 			'user_id'  => auth()->user()->id,

@@ -7,12 +7,19 @@ use Illuminate\Validation\Rule;
 
 class StoreQuoteRequest extends FormRequest
 {
+	protected function prepareForValidation(): void
+	{
+		$this->merge([
+			'quote' => ['en' => $this->quote, 'ka' => $this->quote_ka]
+		]);
+	}
+
 	public function rules(): array
 	{
 		return [
 			'id'       => ['required', Rule::exists('movies', 'id')],
-			'quote'    => ['required', 'string', 'max:255'],
-			'quote_ka' => ['required', 'string', 'max:255'],
+			'quote.en'    => ['required', 'string', 'max:255'],
+			'quote.ka' => ['required', 'string', 'max:255'],
 			'image'    => ['required', 'file', 'mimes:jpeg,png,webp,svg'],
 		];
 	}

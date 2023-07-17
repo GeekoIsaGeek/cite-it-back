@@ -19,7 +19,7 @@ class QuoteController extends Controller
 	public function store(StoreQuoteRequest $request): JsonResponse
 	{
 		$validated = $request->validated();
-		$directoryPath = '/quotes/' . $validated['quote'];
+		$directoryPath = '/quotes/' . $validated['quote']['en'];
 
 		$quote = Quote::create([
 			'quote'    => $validated['quote'],

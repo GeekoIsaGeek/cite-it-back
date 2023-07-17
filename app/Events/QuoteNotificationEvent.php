@@ -27,7 +27,7 @@ class QuoteNotificationEvent implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('notifications.'.auth()->user()->id),
+            new PrivateChannel('notifications.'.$this->receiverId),
         ];
     }
 }

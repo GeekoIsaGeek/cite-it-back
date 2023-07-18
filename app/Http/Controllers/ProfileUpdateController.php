@@ -16,7 +16,7 @@ class ProfileUpdateController extends Controller
 	{
 		try {
 			$validated = $request->validated();
-			$user = User::where('id', $validated['id'])->first();
+			$user = User::find($validated['id']);
 			$credentials = Arr::except($validated, 'id');
 
 			$processedRequestParameters = $this->processRequestParameters($user,$credentials,$request,$sendVerificationEmail);	

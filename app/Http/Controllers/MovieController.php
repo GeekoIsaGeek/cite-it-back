@@ -27,7 +27,7 @@ class MovieController extends Controller
 		$movie = Movie::create([...$validated,'user_id' => auth()->user()->id]);
 
 		if ($movie) {
-			return response()->json($movie->load('quotes'), 201);
+			return response()->json($movie->load(['quotes','author']), 201);
 		} else {
 			return response()->json(['error' => trans('errors.could_not_be_added')], 400);
 		}

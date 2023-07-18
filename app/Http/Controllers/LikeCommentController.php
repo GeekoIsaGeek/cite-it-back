@@ -10,6 +10,7 @@ use App\Http\Requests\Quote\AddCommentRequest;
 use App\Models\Comment;
 use App\Models\Notification;
 use App\Models\Quote;
+use Illuminate\Http\JsonResponse;
 
 class LikeCommentController extends Controller
 {
@@ -19,11 +20,13 @@ class LikeCommentController extends Controller
 		$quote = Quote::findOrFail($quoteId);
 		$user = auth()->user();
 		$hasAlreadyLiked = $quote->likes()->where('user_id', $user->id)->exists();
-		if (!$hasAlreadyLiked) {
+		if ($hasAlreadyLiked) {
+			$quote->likes()->detach($user->id);
+		}else{
 			$quote->likes()->attach($user->id);
-			event(new QuoteLikedEvent($quote->id));
 			$this->createNotification( $user, $quote, 'like');	
 		}
+		event(new QuoteLikedEvent($quote->id));
 	}
 
 	public function addComment(AddCommentRequest $request,int $quoteId): void

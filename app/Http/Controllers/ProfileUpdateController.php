@@ -19,16 +19,20 @@ class ProfileUpdateController extends Controller
 			$user = User::find($validated['id']);
 			$credentials = Arr::except($validated, 'id');
 
-			$processedRequestParameters = $this->processRequestParameters($user,$credentials,$request,$sendVerificationEmail);	
-			$user->update($processedRequestParameters);
+			$processedParameters = $this->processRequestParameters($user,$credentials,$request, $sendVerificationEmail);		
+			$user->update($processedParameters);
+
+			$responseMessage = $request->email 
+				? trans('messages.profile_updated') . trans('messages.email_is_sent') 	
+				: trans('messages.profile_updated');
 			
-			return response()->json(['message' => 'Your profile has been updated', 'user' => $credentials], 200);
+			return response()->json(['message' => $responseMessage, 'user' => $user], 200);
 		} catch(Throwable $error) {
-			return response()->json(['error' => trans('errors.invalid_credentials'), 'exactErrorMessage' => $error->getMessage()], 400);
+			return response()->json(['error' => $error->getMessage()], 400);
 		}
 	}
 
-	private function processRequestParameters($user,$credentials,$request,$sendVerificationEmail): array
+	private function processRequestParameters($user,$credentials,$request, $sendVerificationEmail): array
 	{
 		if (array_key_exists('password', $credentials)) {
 			$credentials['password'] = bcrypt($credentials['password']);
@@ -42,11 +46,11 @@ class ProfileUpdateController extends Controller
 			$imagePath = $request->file('profile_picture')->store('users/' . $user->id);
 			$credentials['profile_picture'] = $imagePath;
 		}
-
+		
 		if (array_key_exists('email', $credentials)) {
 			$sendVerificationEmail->handle($user, $credentials['email']);
 		}
-
+		
 		$credentials = array_filter($credentials,function($key){
 			return $key !== 'email';
 		},ARRAY_FILTER_USE_KEY);

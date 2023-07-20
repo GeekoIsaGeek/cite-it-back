@@ -20,7 +20,7 @@ class Quote extends Model
 		'quote'=> 'array',
 	];
 
-	protected $with = ['movie', 'comments', 'likes'];
+	protected $with = ['movie', 'comments', 'likes', 'author'];
 
 	public function movie(): BelongsTo
 	{
@@ -35,6 +35,10 @@ class Quote extends Model
 	public function comments(): HasMany 
 	{
 		return $this->hasMany(Comment::class);
+	}
+
+	public function author(): BelongsTo{
+		return $this->belongsTo(User::class, 'user_id');
 	}
 
 }

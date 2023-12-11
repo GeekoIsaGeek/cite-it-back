@@ -1,4 +1,4 @@
-# Epic Movie Quotes
+# Cite it
 
 The project is about quotes from different movies. Users can see posts on a news feed page. Each post contains information about the post author, the quote itself, and the movie from which the quote is taken. Authorized users are able to like a post and leave a comment. Authors get notifications if anyone interacts with any of their posts. Likes, Comments, and notifications are updated in real time. Users can authenticate with a Google account, as well as a password and email. They also can update their profile.
 
@@ -28,7 +28,7 @@ The project is about quotes from different movies. Users can see posts on a news
 1\. First of all you need to clone Epic Movie Quotes repository from github:
 
 ```sh
-git clone https://github.com/RedberryInternship/giorgi-kvrivishvili-epic-movie-quotes-back
+git clone https://github.com/RedberryInternship/giorgi-kvrivishvili-cite-it-back
 ```
 
 2\. Next step requires you to run _composer install_ in order to install all the dependencies.
@@ -200,4 +200,4 @@ it will watch JS files and on change it'll rebuild them, so you don't have to ma
 
 [Database Design Diagram](https://drawsql.app/teams/georges-team-6/diagrams/movie-quotes-epic)
 
-<img src="readme/assets/drawsql.png" style="width:100%; height:700px; border-radius:10px" >
+<img src="readme/assets/drawsql.png" style="width:100%; height:500px; border-radius:10px" >
